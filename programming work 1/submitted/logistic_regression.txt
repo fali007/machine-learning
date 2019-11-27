@@ -1,0 +1,43 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+data=np.genfromtxt("diabetes2.csv",delimiter=',')
+data.shape
+
+x_train=data[1:650,0:8]
+y_train=data[1:650,8:9]
+print(x_train.shape,y_train.shape)
+x_test=data[650:,0:8]
+y_test=data[650:,8:9]
+
+def sigmoid(x):
+    temp=1+np.exp(-x)
+    return 1/temp
+
+def log_likeyhood(x,y,theta):
+    score=np.dot(x,theta)
+    temp=np.sum(y*score-np.log(1+np.exp(score)))
+    return temp
+
+def logistic_regression(x,y,weight):
+    rate=0.001
+    gradient=0
+    for i in range(len(x)):
+        score=np.dot(weight,x[i])
+        prediction=sigmoid(score)
+        error=y[i]-prediction
+        gradient+=x[i]*error
+    weight+=rate*gradient/len(x)
+    return weight
+
+weight=np.zeros(x_train.shape[1])
+for i in range(10000):
+    weight=logistic_regression(x_train,y_train,weight)
+    if i%1000==0:
+        print(log_likeyhood(x_train,y_train,weight))
+print(weight)
+
+for i in range(len(x_test)):
+    score=np.dot(weight,x_test[i])
+    print(np.round(sigmoid(score)),y_test[i])
+print(log_likeyhood(x_test,y_test,weight))

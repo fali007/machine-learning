@@ -1,0 +1,24 @@
+from svmutil import*
+import numpy as np
+
+param=svm_parameter()
+
+param.C=10
+
+param.kernel_type=LINEAR
+
+y=[1,0,1,0,1]
+y=np.asarray(y)
+
+x=[[1,0,1],[0,1,1],[1,1,0],[1,1,1],[1,0,0]]
+x=np.asarray(x)
+
+p=svm_problem(y,x)
+n=svm_model()
+m=svm_train(p,param)
+
+print(p_labels, p_acc, p_vals = svm_predict(y, x, m))
+
+print(p_labels, p_acc, p_vals = svm_predict([], [[1,3,3],[8]], m))
+
+print(p_labels)

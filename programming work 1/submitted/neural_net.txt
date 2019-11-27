@@ -1,0 +1,41 @@
+import numpy as np
+import random
+def sigmoid(x):
+    return 1.0/(1+ np.exp(-x))
+
+def sigmoid_derivative(x):
+    return x * (1.0 - x)
+
+class neural_net:
+    def __init__(self,x,y):
+        self.input=x
+        self.y=y
+        self.weights1=np.random.rand(self.input.shape[1],4)
+        self.weights2=np.random.rand(4,1)
+        self.output=np.zeros(y.shape)
+        self.error=[]
+    def forward(self):
+        self.layer1=sigmoid(np.dot(self.input,self.weights1))
+        self.output=sigmoid(np.dot(self.layer1,self.weights2))
+    def backward(self):
+        self.error.append(np.sum(-self.y+self.output))
+        d_weights2=np.dot(self.layer1.T,2*(self.y-self.output)*sigmoid_derivative(self.output))
+        d_weights1 =np.dot(self.input.T,(np.dot(2*(self.y - self.output)*sigmoid_derivative(self.output),self.weights2.T)*sigmoid_derivative(self.layer1))) 
+        self.weights1 += d_weights1
+        self.weights2 += d_weights2
+
+x=np.array([[0,0,1],
+            [0,1,1],
+            [1,0,1],
+            [1,1,1]])
+y=np.array([[0],[1],[1],[0]])
+net=neural_net(x,y)
+for _ in range(1500):
+    net.forward()
+    net.backward()
+
+print(net.output)a
+
+import matplotlib.pyplot as plt
+plt.plot(net.error)
+plt.show()

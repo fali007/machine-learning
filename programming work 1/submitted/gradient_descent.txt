@@ -1,0 +1,51 @@
+# importing modules
+import numpy as np
+import matplotlib.pyplot as plt
+
+# loading dataset
+data=np.genfromtxt("breastCancer.csv", delimiter=",")
+print(data.shape)
+
+# splitting the dataset
+x_test=data[500:700,1:10]
+y_test=data[500:700,10:11]
+x_train=data[:500,1:10]
+y_train=data[:500,10:11]
+
+#gradient descent algorithm
+def descent(theta,x,y):
+    rate=0.01
+    for i in range(len(x)):
+        error=y[i]-np.dot(theta,x[i])
+        gradient=error*x[i]
+    theta=theta+gradient*rate/len(x)
+    return theta
+
+#error function
+def error_(theta,x,y):
+    error=0
+    for i in range(len(x)):
+        error+=abs(y[i]-np.dot(theta,x[i]))
+        print(error)
+    return error
+
+theta=[0,0,0,0,0,0,0,0,0]
+error=[]
+for i in range(1000):
+    theta=descent(theta,x_train,y_train)
+    error.append(error_(theta,x_test[:50],y_test[:50]))
+    print(error)
+plt.plot(error)
+plt.show()
+
+# test set
+count=0
+for i in range(len(x_test)):
+    val=np.dot(x_test[i],theta)
+    val=np.ceil(val)
+    if val==y_test[i][0]:
+        print(val,y_test[i][0],count+1)
+        count+=1
+
+#accuracy
+print(count/len(x_test))
